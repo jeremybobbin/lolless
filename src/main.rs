@@ -31,7 +31,7 @@ use std::{
     time::Duration
 };
 
-const LIMIT: usize = 1000;
+const LIMIT: usize = 10000;
 
 fn main() {
 
