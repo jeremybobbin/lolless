@@ -1,7 +1,7 @@
 SRC = $(shell find src/ -type f)
 NAME = $(shell  pwd | xargs -n1 basename)
 EXECUTIBLE = target/release/${NAME}
-TARGET = /usr/local/bin
+TARGET = /usr/bin
 
 build: ${EXECUTIBLE}
 

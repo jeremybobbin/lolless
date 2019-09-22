@@ -32,9 +32,12 @@ use std::{
 };
 
 const LIMIT: usize = 10000;
+const STEP: f64 = 0.01;
+const WIDTH: f64 = 3.0;
 
 fn main() {
 
+    // Heap allocated READER
     let mut reader: Box<dyn Read> = if let Some(path) = args().nth(1) {
         let file = File::open(&path) 
             .expect(&format!("Could not open '{}'.", &path));
@@ -43,6 +46,8 @@ fn main() {
         Box::new(io::stdin())
     };
 
+
+    // TODO: Only read current (WIDTH * SIZE) of terminal
     let mut input = String::with_capacity(LIMIT);
 
     reader.take(LIMIT as u64)
@@ -52,40 +57,16 @@ fn main() {
     let mut reader = io::Cursor::new(input);
     let mut writer = io::stdout();
 
-    let mut positive: Vec<f64> = (0..)
-        .into_iter()
-        .map(|i| i as f64 / 500.)
-        .take_while(|&i| i < 1.)
-        .collect();
 
-    let full: Vec<f64> = positive
-        .iter()
-        .map(|&i| i * -1.)
-        .rev()
-        .chain(positive.iter().map(|&i| i))
-        .collect();
-
-    let forward = full.iter();
-
-    let mut backward = forward
-        .clone()
-        .rev();
-    
-    let mut primary = forward
-        .clone()
-        .chain(backward.clone())
+    let iteration = (1..)
+        .map(|x| (x as f64) * STEP)
+        .take_while(|x| *x < 2. * PI)
+        .map(|x| (x.sin() / WIDTH, x.cos() / WIDTH))
         .cycle();
-
-    let mut secondary = backward
-        .chain(forward)
-        .cycle();
-
-    let iteration = primary
-        .zip(secondary);
 
     print!("{}{}", clear::All, cursor::Hide);
 
-    for (&a, &b) in iteration {
+    for (a, b) in iteration {
         print!("{}", cursor::Goto(1,1));
         lolcat(&mut reader, &mut writer, (a, b))
             .expect("Error writing to screen");
