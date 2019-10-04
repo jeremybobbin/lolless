@@ -33,7 +33,7 @@ use std::{
 
 const LIMIT: usize = 10000;
 const STEP: f64 = 0.01;
-const WIDTH: f64 = 3.0;
+const WIDTH: f64 = 5.0;
 
 fn main() {
 
